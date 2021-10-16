@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shop_box/constants/buttons.dart';
-import 'package:shop_box/view_model/provider_view_model.dart';
+import 'package:shop_box/constants/data.dart';
+import 'package:shop_box/models/sellableItem_model.dart';
+import 'package:shop_box/view_model/provider_cart_view_model.dart';
 
 Widget addCustomerWidget({Function onTap}) {
   return InkWell(
@@ -35,37 +37,45 @@ Widget addCustomerWidget({Function onTap}) {
   );
 }
 
-
-
-
-Widget driversMenu(){
-  return  Padding(
-    padding: const EdgeInsets.all(15),
-    child: Row(
-      children: [
-        Icon(
-          Icons.cloud_download_outlined,
-          size: 28,
-        ),
-
-        Padding(
-          padding: const EdgeInsets.only(left: 15,right: 15),
-          child: Icon(
-            Icons.add_box_outlined,
+Widget driversMenu() {
+  return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Row(
+        children: [
+          Icon(
+            Icons.cloud_download_outlined,
             size: 28,
           ),
-        ),
-        Icon(
-          Icons.qr_code_scanner_sharp,
-          size: 28,
-        ),
-        Spacer(flex: 1,)
-        ,Icon(Icons.more_vert,size: 28,)
-      ],
-    ));
+          Padding(
+            padding: const EdgeInsets.only(left: 15, right: 15),
+            child: Icon(
+              Icons.add_box_outlined,
+              size: 28,
+            ),
+          ),
+          Icon(
+            Icons.qr_code_scanner_sharp,
+            size: 28,
+          ),
+          Spacer(
+            flex: 1,
+          ),
+          Icon(
+            Icons.more_vert,
+            size: 28,
+          )
+        ],
+      ));
 }
 
-Widget sellableItemWidget({String image, String itemName, String price,int count,bool countOrPrice=false,Function onTap}) {
+Widget sellableItemWidget(
+    {String image,
+    String itemName,
+    String price,
+    int count,
+    bool countOrPrice = false,
+    List<SellableItem> sellableList,
+    Function onTap}) {
   var lastLitter = itemName.indexOf(' ') + 1;
 
   return InkWell(
@@ -75,34 +85,34 @@ Widget sellableItemWidget({String image, String itemName, String price,int count
       children: [
         Flexible(
             flex: 5,
-            child: image == null
+            child: image == null||image.isEmpty
                 ? Container(
-              child: Center(
-                child: CircleAvatar(
-                  radius: 28,
-                  backgroundColor: Colors.green[800],
-                  child: Text(
-                    itemName[0] + itemName[lastLitter],
-                    style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white),
-                  ),
-                ),
-              ),
-              decoration: BoxDecoration(
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(6)),
-            )
+                    child: Center(
+                      child: CircleAvatar(
+                        radius: 28,
+                        backgroundColor: Colors.green[800],
+                        child: Text(
+                          itemName[0] + itemName[lastLitter],
+                          style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                    decoration: BoxDecoration(
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(6)),
+                  )
                 : Container(
-              decoration: BoxDecoration(
-                  image: DecorationImage(
-                    fit: BoxFit.fill,
-                    image: NetworkImage(image),
-                  ),
-                  color: Colors.green,
-                  borderRadius: BorderRadius.circular(6)),
-            )),
+                    decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.fill,
+                          image: NetworkImage(image),
+                        ),
+                        color: Colors.green,
+                        borderRadius: BorderRadius.circular(6)),
+                  )),
         SizedBox(
           height: 8,
         ),
@@ -115,24 +125,69 @@ Widget sellableItemWidget({String image, String itemName, String price,int count
         SizedBox(
           height: 5,
         ),
-     countOrPrice?  Align(
-         alignment: Alignment.bottomRight,
-         child: Text(
-           count.toString(),
-         )) : Align(
-            alignment: Alignment.bottomRight,
-            child: Text(
-              price == null ? "?" : "${price.toString()} Kr",
-            ))
+        countOrPrice
+            ? Align(
+                alignment: Alignment.bottomRight,
+                child: Text(
+                  count.toString(),
+                ))
+            : Align(
+                alignment: Alignment.bottomRight,
+                child: Text(
+                  price == null ? "?" : "${price.toString()} Kr",
+                ))
       ],
     ),
   );
 }
 
 
-Widget customerCartMenu(context){
-  var userDataProvider = Provider.of<ProviderViewModel>(context, listen: false);
-  return  Container(
+Widget sellableItemMenu ({
+  List<SellableItem> sellableList,
+  Function onTap,int quantity,String productId}){
+  return InkWell(
+    onTap: onTap,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+
+
+        Flexible(
+            flex: 5,
+            child: Container(
+              decoration: BoxDecoration(
+                  image: DecorationImage(
+                    fit: BoxFit.fill,
+                    image: NetworkImage(productId=="99"?testImageList[0]:productId=="98"?testImageList[1]:testImageList[2]),
+                  ),
+                  color: Colors.green,
+                  borderRadius: BorderRadius.circular(6)),
+            )),
+        SizedBox(
+          height: 8,
+        ),
+        Flexible(
+            flex: 1,
+            child: Text(
+              sellableList[0].menuName,
+              style: TextStyle(fontWeight: FontWeight.bold),
+            )),
+        SizedBox(
+          height: 5,
+        ),
+        Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+               "$quantity",
+            ))
+      ],
+    ),
+  );
+}
+
+Widget customerCartMenu({context,Widget widget}) {
+  var cartProvider = Provider.of<CartProviderViewModel>(context, listen: false);
+  return Container(
     child: Column(
       children: [
         Flexible(flex: 1, child: addCustomerWidget()),
@@ -143,11 +198,9 @@ Widget customerCartMenu(context){
           flex: 8,
           child: Container(
             decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(10)),
+                color: Colors.white, borderRadius: BorderRadius.circular(10)),
             child: Padding(
-              padding: const EdgeInsets.only(
-                  left: 10, right: 10, bottom: 30),
+              padding: const EdgeInsets.only(left: 10, right: 10, bottom: 30),
               child: Column(
                 children: [
                   driversMenu(),
@@ -156,35 +209,7 @@ Widget customerCartMenu(context){
                     indent: 15,
                     endIndent: 15,
                   ),
-              GridView.builder(
-                shrinkWrap: true,
-                  itemCount: userDataProvider.itemCount,
-                  gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 3,
-                      mainAxisSpacing: 3,
-                      childAspectRatio: 9 / 7),
-                  itemBuilder: (context, i) {
-                    return Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: sellableItemWidget(
-                              onTap: (){
-
-                              },
-                              itemName: userDataProvider.items.values.toList()[i].name,
-                              image: userDataProvider.items.values.toList()[i].image,
-                              count: userDataProvider.items.values.toList()[i].quantity,
-                            countOrPrice: true
-
-                          )),
-                    );
-                  }),
+                 widget,
                   Spacer(
                     flex: 1,
                   ),
@@ -201,18 +226,13 @@ Widget customerCartMenu(context){
                         flex: 1,
                       ),
                       Text(
-                        "${userDataProvider.totalAmount.toStringAsFixed(2)} Kr ",
+                        "${cartProvider.totalAmount.toStringAsFixed(2)} Kr ",
                         style: TextStyle(
                             color: Colors.grey,
                             fontWeight: FontWeight.bold,
                             fontSize: 16),
                       )
                     ],
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 10, bottom: 5),
-                    child: discountButton(),
                   ),
                   Divider(
                     color: Colors.grey[300],
@@ -225,17 +245,15 @@ Widget customerCartMenu(context){
                       Text(
                         "Total after Tax",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20),
+                            fontWeight: FontWeight.bold, fontSize: 20),
                       ),
                       Spacer(
                         flex: 1,
                       ),
                       Text(
-                        "${userDataProvider.totalAmountWithTax.toStringAsFixed(2)} Kr ",
+                        "${cartProvider.totalAmountWithTax.toStringAsFixed(2)} Kr ",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 18),
+                            fontWeight: FontWeight.bold, fontSize: 18),
                       )
                     ],
                   ),
@@ -248,3 +266,4 @@ Widget customerCartMenu(context){
     ),
   );
 }
+
