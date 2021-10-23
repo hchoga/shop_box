@@ -7,8 +7,8 @@ class SellableItemMenu extends StatelessWidget {
   final List <SellableItem> sellableList;
   final Function onTap;
   final int quantity;
-  final  String productId;
-  SellableItemMenu({this.onTap,this.sellableList,this.quantity,this.productId});
+  final  String productId,image;
+  SellableItemMenu({this.onTap,this.sellableList,this.quantity,this.productId,this.image});
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -24,7 +24,7 @@ class SellableItemMenu extends StatelessWidget {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.fill,
-                      image: NetworkImage(productId=="99"?testImageList[0]:productId=="98"?testImageList[1]:testImageList[2]),
+                      image: NetworkImage(image),
                     ),
                     color: Colors.green,
                     borderRadius: BorderRadius.circular(6)),

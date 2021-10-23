@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:shop_box/constants/data.dart';
 import 'package:shop_box/services/api/api_service/api_service.dart';
+import 'package:shop_box/view_model/home_function/create_menu_function.dart';
 import 'package:shop_box/view_model/provider_cart_view_model.dart';
 import 'package:shop_box/view_model/provider_fetchData_view_model.dart';
 import 'package:shop_box/widgets/home_widgets/customer_cart_menu/customer_cart_widget.dart';
@@ -12,9 +14,9 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var cartProvider =
-        Provider.of<CartProviderViewModel>(context, listen: true);
+    Provider.of<CartProviderViewModel>(context, listen: true);
     var fetchDataProvider =
-        Provider.of<ProviderFetchDataViewModel>(context, listen: false);
+    Provider.of<ProviderFetchDataViewModel>(context, listen: false);
 
     return SafeArea(
       child: Scaffold(
@@ -32,11 +34,11 @@ class Home extends StatelessWidget {
                           return GridView.builder(
                               itemCount: snapshots.data.length,
                               gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                      crossAxisCount: 4,
-                                      crossAxisSpacing: 15,
-                                      mainAxisSpacing: 15,
-                                      childAspectRatio: 9 / 7),
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 4,
+                                  crossAxisSpacing: 15,
+                                  mainAxisSpacing: 15,
+                                  childAspectRatio: 9 / 7),
                               itemBuilder: (context, i) {
                                 return Container(
                                   decoration: BoxDecoration(
@@ -57,10 +59,10 @@ class Home extends StatelessWidget {
                                             image: snapshots.data[i].image,
                                             tax: snapshots.data[i].tax,
                                           );
-                                          print(fetchDataProvider
-                                              .sellableList[0].name);
-                                          menuCheckFunction(
-                                              userDataProvider: cartProvider);
+                                          menuGeneratorFunction(
+                                              cartProvider: cartProvider,
+                                              fetchDataProvider:
+                                              fetchDataProvider);
                                         },
                                       )),
                                 );
@@ -81,11 +83,11 @@ class Home extends StatelessWidget {
                           shrinkWrap: true,
                           itemCount: cartProvider.itemCount,
                           gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                  crossAxisCount: 2,
-                                  crossAxisSpacing: 3,
-                                  mainAxisSpacing: 3,
-                                  childAspectRatio: 9 / 7),
+                          SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 3,
+                              mainAxisSpacing: 3,
+                              childAspectRatio: 9 / 7),
                           itemBuilder: (context, i) {
                             return Container(
                               decoration: BoxDecoration(
@@ -95,32 +97,35 @@ class Home extends StatelessWidget {
                               child: Padding(
                                   padding: const EdgeInsets.all(10.0),
                                   child: cartProvider.items.values
-                                              .toList()[i]
-                                              .name ==
-                                          null
+                                      .toList()[i]
+                                      .name ==
+                                      null
                                       ? SellableItemMenu(
-                                          productId: cartProvider.items.values
-                                              .toList()[i]
-                                              .id,
-                                          sellableList: cartProvider
-                                              .items.values
-                                              .toList()[i]
-                                              .menuGroup,
-                                          quantity: cartProvider.items.values
-                                              .toList()[i]
-                                              .quantity)
+                                      productId: cartProvider.items.values
+                                          .toList()[i]
+                                          .id,
+                                      sellableList: cartProvider
+                                          .items.values
+                                          .toList()[i]
+                                          .menuGroup,
+                                      image: cartProvider.items.values
+                                          .toList()[i]
+                                          .image,
+                                      quantity: cartProvider.items.values
+                                          .toList()[i]
+                                          .quantity)
                                       : SellableItemWidget(
-                                          onTap: () {},
-                                          itemName: cartProvider.items.values
-                                              .toList()[i]
-                                              .name,
-                                          image: cartProvider.items.values
-                                              .toList()[i]
-                                              .image,
-                                          count: cartProvider.items.values
-                                              .toList()[i]
-                                              .quantity,
-                                          countOrPrice: true)),
+                                      onTap: () {},
+                                      itemName: cartProvider.items.values
+                                          .toList()[i]
+                                          .name,
+                                      image: cartProvider.items.values
+                                          .toList()[i]
+                                          .image,
+                                      count: cartProvider.items.values
+                                          .toList()[i]
+                                          .quantity,
+                                      countOrPrice: true)),
                             );
                           }),
                     ),
