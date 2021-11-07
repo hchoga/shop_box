@@ -24,7 +24,7 @@ class SellableItemMenu extends StatelessWidget {
                 decoration: BoxDecoration(
                     image: DecorationImage(
                       fit: BoxFit.fill,
-                      image: NetworkImage(image),
+                      image: NetworkImage(image==null?"":image),
                     ),
                     color: Colors.green,
                     borderRadius: BorderRadius.circular(6)),

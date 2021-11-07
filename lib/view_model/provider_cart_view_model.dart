@@ -67,7 +67,7 @@ class CartProviderViewModel extends ChangeNotifier {
       String name,
       String image,
       String tax,
-      List<SellableItem> menuGroup}) {
+      menuGroup}) {
     if (_items.containsKey(productId)) {
       // change quantity...
       _items.update(
@@ -79,7 +79,7 @@ class CartProviderViewModel extends ChangeNotifier {
             price: existingCartItem.price,
             tax: existingCartItem.tax,
             quantity: existingCartItem.quantity + 1,
-            menuGroup: existingCartItem.menuGroup),
+            menuGroup: menuGroup ),
       );
     } else {
       _items.putIfAbsent(

@@ -28,7 +28,7 @@ class Home extends StatelessWidget {
                   flex: 5,
                   child: Container(
                     child: FutureBuilder(
-                      future: ApiService.fetchPosts(fetchDataProvider),
+                      future: fetchDataProvider.fetchData(),
                       builder: (context, snapshots) {
                         if (snapshots.hasData) {
                           return GridView.builder(
